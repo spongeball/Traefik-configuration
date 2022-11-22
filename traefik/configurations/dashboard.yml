@@ -1,0 +1,9 @@
+http:
+  routers:
+    traefik:
+      rule: "Host()"
+      service: api@internal
+      entrypoints: https
+      middlewares: 
+        - auth
+      tls: {}
