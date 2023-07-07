@@ -1,0 +1,15 @@
+http:
+  routers:
+    traefik:
+      rule: "Host(localhost.example.com)"
+      service: localhost
+      entrypoints: https
+      middlewares: 
+        - auth
+      tls: {}
+
+services:
+  localhost:
+    loadBalancer:
+      servers:
+        - url: "http://local-server-ip"

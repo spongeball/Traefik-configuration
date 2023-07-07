@@ -1,4 +1,4 @@
-# Traefik config
+# Traefik
 
-Simple traefik + portainer deployed with Docker Swarm.
+Some Traefik docker configurations.
 

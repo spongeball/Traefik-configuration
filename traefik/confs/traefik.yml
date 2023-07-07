@@ -1,5 +1,4 @@
 # Traefik static configuration
-# v 1.0.0
 
 providers:
   docker:
@@ -18,7 +17,7 @@ api:
   debug: false
 
 log:
-  level: DEBUG
+  level: PANIC
   format: json
 
 accessLog:
@@ -36,7 +35,6 @@ certificatesResolvers:
     acme:
       storage: /etc/traefik/cert/acme.json
       #caServer: https://acme-staging-v02.api.letsencrypt.org/directory
-      #certificatesDuration: 168
       dnsChallenge:
         provider: cloudflare
         resolvers:

@@ -25,12 +25,6 @@ x-placementrule: &placementrule
       # as the node with it has the volume for the certificates
       - node.labels.traefik.traefik_certificates == true
 
-x-resourcerule: &resourcerule
-  resources:
-    limits:
-      cpus: "2"
-      memory: "1000M"
-
 secrets:
   cloudflare_token:
     external: true
@@ -47,14 +41,13 @@ volumes:
 
 networks:
   public-net:
-    # Declared as external to avoid error while redeploying all proxy stack
     external: true
 
 services:
   traefik:
-    image: traefik:v2.9.4
+    image: traefik:latest
     environment:
-      - TZ=Europe/Rome
+      - TZ=Country/City
       - CF_DNS_API_TOKEN_FILE=/run/secrets/cloudflare_token
       - CF_API_EMAIL_FILE=/run/secrets/cloudflare_email
       - TRAEFIK_CERTIFICATESRESOLVERS_LE_ACME_EMAIL=/run/secrets/cloudflare_email
@@ -68,22 +61,18 @@ services:
       - target: 443
         published: 443
         mode: host
-          #- target: 443
-          #  published: 443
-          #  mode: host
     networks:
       - public-net
     configs:
        - source: traefik_static_config
          target: /etc/traefik/traefik.yml
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro # Bind docker socket to watch for new container
-      - ./configurations:/etc/traefik/configurations # Dynamic configurations
-      - traefik_certificates:/etc/traefik/cert # Let's Encrypt certificates
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./configurations:/etc/traefik/configuration
+      - traefik_certificates:/etc/traefik/cert
     deploy:
       <<: *configrule
       <<: *placementrule
-      <<: *resourcerule
       labels:
         - traefik.enable=true
         - traefik.http.services.traefik.loadbalancer.server.port=8080

@@ -1,0 +1,43 @@
+# Traefik static configuration
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: public-net
+    swarmMode: true
+    defaultRule: ""
+  file:
+    directory: "/etc/traefik/configurations"
+    watch: true
+
+api:
+  dashboard: true
+  insecure: false
+  debug: false
+
+log:
+  level: DEBUG
+  format: json
+
+accessLog:
+  filePath: "/var/log/access.log"
+  format: json
+
+entryPoints:
+  http:
+    address: ":80"
+  https:
+    address: ":443"
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      storage: /etc/traefik/cert/acme.json
+      #caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+      #certificatesDuration: 168
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "1.0.0.1:53"
